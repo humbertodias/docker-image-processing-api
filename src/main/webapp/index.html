@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>jhlabs</title>
+            <!-- Required meta tags -->
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+            <!-- jQuery -->
+            <script src="/webjars/jquery/jquery.min.js"></script>
+            <!-- Bootstrap -->
+            <link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
+            <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Filter</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <form action="filter" method="POST" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <select class="form-control" name="name">
+                                <option value="pointillize">pointillize</option>
+                                <option value="blur">blur</option>
+                                <option value="water">water</option>
+                                <option value="ripple">ripple</option>
+                                <option value="shadow">shadow</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="file">Image</label>
+                            <input type="file" class="form-control" name="file" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="output">Output</label>
+                            <select class="form-control" name="output">
+                                <option value="svg">SVG</option>
+                                <option value="png" selected>PNG</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Gerar</button>
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
