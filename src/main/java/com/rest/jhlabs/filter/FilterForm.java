@@ -32,8 +32,4 @@ public class FilterForm {
         this.output = output;
     }
 
-    public byte[] toBytes(){
-        return new byte[0];
-    }    
-    
 }

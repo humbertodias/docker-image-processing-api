@@ -22,15 +22,19 @@ http://localhost:8080
 
 ![](doc/form.png)
 
+Input
 
-![Filter](doc/output.png)
+![Input](doc/input.png)
 
+Output - Filter pointillize
+
+![OutPut](doc/output.png)
 
 # Using terminal
 
 ```
 curl "http://localhost:8080/filter" \
--F file=@doc/form.png \
+-F file=@doc/input.png \
 -F name=pointillize \
 -F output=png > output.png
 ```

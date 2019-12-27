@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 @RestController
 public class FilterController {
@@ -19,7 +20,7 @@ public class FilterController {
     private FilterService filterService;
 
     @PostMapping("/filter")
-    public ResponseEntity<InputStreamResource> filter(@ModelAttribute FilterForm filterForm) throws IOException {
+    public ResponseEntity<InputStreamResource> filter(@ModelAttribute FilterForm filterForm) throws IOException, IllegalAccessException, InstantiationException {
         BufferedImage src = ImageIO.read(filterForm.getFile().getInputStream());
         byte[] bytes = filterService.apply(src, filterForm.getName(), filterForm.getOutput());
 
@@ -34,6 +35,11 @@ public class FilterController {
                 .headers(headers)
                 .contentType(mediaType)
                 .body(new InputStreamResource(new ByteArrayInputStream(bytes)));
+    }
+
+    @GetMapping("/filters")
+    public Set<String> filters(){
+        return filterService.filters();
     }
 
 }

@@ -11,9 +11,11 @@
             <!-- Bootstrap -->
             <link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
             <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+            <!-- Vue -->
+            <script src="/webjars/vue/vue.min.js"></script>
     </head>
     <body>
-        <div class="container">
+        <div id="app" class="container">
             <h1>Filter</h1>
             <div class="row">
                 <div class="col-md-6">
@@ -21,13 +23,12 @@
 
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <select class="form-control" name="name">
-                                <option value="pointillize">pointillize</option>
-                                <option value="blur">blur</option>
-                                <option value="water">water</option>
-                                <option value="ripple">ripple</option>
-                                <option value="shadow">shadow</option>
+                            <select v-model="selectedFilter" class="form-control" name="name">
+                                <option v-for="option in filters" v-bind:value="option">
+                                    {{ option }}
+                                </option>
                             </select>
+
                         </div>
 
                         <div class="form-group">
@@ -49,5 +50,27 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            new Vue({
+                el: "#app",
+                data: {
+                    filters: [],
+                    selectedFilter: 'pointillize',
+                },
+                created() {
+                    console.log("created")
+                    fetch('/filters')
+                        .then(response => response.json())
+                        .then((data) => this.filters = data);
+                },
+                methods: {
+                    fun: function() {
+                        alert('ok');
+                    },
+                }
+            })
+        </script>
+
     </body>
 </html>
