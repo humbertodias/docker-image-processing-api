@@ -1,76 +1,112 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>jhlabs</title>
-            <!-- Required meta tags -->
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+    <title>Image filter - jhlabs</title>
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
-            <!-- jQuery -->
-            <script src="/webjars/jquery/jquery.min.js"></script>
-            <!-- Bootstrap -->
-            <link rel='stylesheet' href='/webjars/bootstrap/css/bootstrap.min.css'>
-            <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-            <!-- Vue -->
-            <script src="/webjars/vue/vue.min.js"></script>
-    </head>
-    <body>
-        <div id="app" class="container">
-            <h1>Filter</h1>
-            <div class="row">
-                <div class="col-md-6">
-                    <form action="filter" method="POST" enctype="multipart/form-data">
+    <link rel='stylesheet' href='/webjars/vuetify/dist/vuetify.min.css'>
+    <link rel='stylesheet' href='/webjars/mdi/css/materialdesignicons.min.css'>
 
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <select v-model="selectedFilter" class="form-control" name="name">
-                                <option v-for="option in filters" v-bind:value="option">
-                                    {{ option }}
-                                </option>
-                            </select>
+</head>
+<body>
 
-                        </div>
+<div id="app">
+    <v-app>
 
-                        <div class="form-group">
-                            <label for="file">Image</label>
-                            <input type="file" class="form-control" name="file" required>
-                        </div>
+        <v-form
+                ref="form"
+                v-model="valid"
+        >
+            <v-card
+                    max-width="375"
+                    class="mx-auto"
+            >
 
-                        <div class="form-group">
-                            <label for="output">Output</label>
-                            <select class="form-control" name="output">
-                                <option value="svg">SVG</option>
-                                <option value="png" selected>PNG</option>
-                            </select>
-                        </div>
+                <v-card-title>Filter</v-card-title>
+                <v-img
+                        class="white--text align-end"
+                        min-height="200px"
+                        :src="image"
+                >
+                </v-img>
 
-                        <button type="submit" class="btn btn-primary btn-block">Gerar</button>
-                        <br />
-                    </form>
-                </div>
-            </div>
-        </div>
 
-        <script>
-            new Vue({
-                el: "#app",
-                data: {
-                    filters: [],
-                    selectedFilter: 'pointillize',
-                },
-                created() {
-                    console.log("created")
-                    fetch('/filters')
-                        .then(response => response.json())
-                        .then((data) => this.filters = data);
-                },
-                methods: {
-                    fun: function() {
-                        alert('ok');
-                    },
-                }
-            })
-        </script>
+                <v-card-text>
 
-    </body>
+                    <v-select v-model="selectedFilter" :items="filters" name="name" label="Name" required>
+                    </v-select>
+
+                    <v-file-input v-model="selectedFile" label="Image" name="file" required
+                                  accept="image/*"
+                                  show-size
+                    ></v-file-input>
+
+                    <v-select v-model="selectedFormat" name="output" :items="formats" label="Format" required>
+                    </v-select>
+
+                </v-card-text>
+
+                <v-card-actions>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn class="success" @click="submit">Gerar</v-btn>
+
+                </v-card-actions>
+
+            </v-card>
+
+        </v-form>
+
+    </v-app>
+</div>
+
+<script src="/webjars/vue/vue.min.js"></script>
+<script src="/webjars/vuetify/dist/vuetify.min.js"></script>
+
+<script>
+    new Vue({
+        el: "#app",
+        vuetify: new Vuetify(),
+        data: {
+            filters: [],
+            formats: ["png", "jpg", "gif"],
+            selectedFilter: 'pointillize',
+            selectedFormat: 'png',
+            selectedFile: [],
+            valid: false,
+            image: false,
+        },
+        created() {
+            console.log("created")
+            fetch('/filters')
+                .then(response => response.json())
+                .then((data) => this.filters = data);
+        },
+        methods: {
+            submit: function () {
+                let self = this;
+                const data = new FormData();
+                data.append('name', this.selectedFilter);
+                data.append('file', this.selectedFile);
+                data.append('output', this.selectedFormat);
+                let body = {
+                    method: 'post',
+                    body: data,
+                    headers: {"enc-type": "multipart/form-data"}
+                };
+                fetch('filter', body)
+                    .then(resp => resp.blob())
+                    .then(blob => URL.createObjectURL(blob))
+                    .then(function (uri) {
+                        console.log(uri)
+                        self.image = uri;
+                    })
+            },
+        }
+    })
+</script>
+
+</body>
 </html>

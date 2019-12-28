@@ -80,8 +80,6 @@ public class FilterService {
         return filter.filter(src, null);
     }
 
-
-
     public BufferedImage shadow(BufferedImage src) {
         ShadowFilter filter = new ShadowFilter();
         filter.setRadius(10);
