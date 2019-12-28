@@ -13,6 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @Service
 public class FilterService {
@@ -24,7 +26,6 @@ public class FilterService {
         filter.setFadeEdges(false);
         filter.setEdgeColor(Color.GRAY.getRGB());
         filter.setFuzziness(1.0f);
-
         return filter.filter(src, null);
     }
 
@@ -48,6 +49,39 @@ public class FilterService {
         return filter.filter(src,null);
     }
 
+    // http://www.jhlabs.com/ip/filters/HighPassFilter.html
+    public BufferedImage highPassFilter(BufferedImage src) {
+        HighPassFilter filter = new HighPassFilter();
+        return filter.filter(src, null);
+    }
+
+    public BufferedImage channelMixFilter(BufferedImage src) {
+        ChannelMixFilter filter = new ChannelMixFilter();
+        return filter.filter(src, null);
+    }
+
+    public BufferedImage curvesFilter(BufferedImage src) {
+        CurvesFilter filter = new CurvesFilter();
+        return filter.filter(src, null);
+    }
+
+    public BufferedImage diffuseFilter(BufferedImage src) {
+        DiffuseFilter filter = new DiffuseFilter();
+        return filter.filter(src, null);
+    }
+
+    public BufferedImage ditherFilter(BufferedImage src) {
+        DitherFilter filter = new DitherFilter();
+        return filter.filter(src, null);
+    }
+
+    public BufferedImage exposureFilter(BufferedImage src) {
+        ExposureFilter filter = new ExposureFilter();
+        return filter.filter(src, null);
+    }
+
+
+
     public BufferedImage shadow(BufferedImage src) {
         ShadowFilter filter = new ShadowFilter();
         filter.setRadius(10);
@@ -63,22 +97,15 @@ public class FilterService {
         return filter.filter(src, null);
     }
 
-    private Object invoke(String filterName, BufferedImage src) throws IllegalAccessException, InstantiationException {
+    private Object invoke(String filterName, BufferedImage src) throws IllegalAccessException, InstantiationException, InvocationTargetException {
 
         Class<?> clazz = getClass();
         Object instance = clazz.newInstance();
 
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.getName().equals(filterName)) {
-                try {
-                    method.setAccessible(true);
-                    return method.invoke(instance, src);
-                    // Handle any exceptions thrown by method to be invoked.
-                } catch (InvocationTargetException | IllegalAccessException x) {
-                    Throwable cause = x.getCause();
-                    System.err.format("invocation of %s failed: %s%n",
-                            method.getName(), cause.getMessage());
-                }
+                method.setAccessible(true);
+                return method.invoke(instance, src);
             }
 
         }
@@ -88,13 +115,14 @@ public class FilterService {
     public Set<String> filters() {
         Set<String> filters = new HashSet<>();
         for (Method method : getClass().getDeclaredMethods()) {
-            if(method.getGenericReturnType().getTypeName().contains("BufferedImage"))
+            if(method.getReturnType().equals(BufferedImage.class))
                 filters.add(method.getName());
         }
-        return filters;
+        // Sort by name
+        return filters.stream().collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public byte[] apply(BufferedImage src, String filterName, String output) throws IOException, InstantiationException, IllegalAccessException {
+    public byte[] apply(BufferedImage src, String filterName, String output) throws IOException, InstantiationException, IllegalAccessException, InvocationTargetException {
         Object ret = invoke(filterName, src);
         return ret != null ? toBytes((BufferedImage) ret, output) : null;
     }

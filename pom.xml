@@ -59,6 +59,13 @@
 			<version>2.6.11</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.webjars.npm/vuetify -->
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>vuetify</artifactId>
+			<version>2.1.15</version>
+		</dependency>
+
 
 
 	</dependencies>

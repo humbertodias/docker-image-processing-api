@@ -1,5 +1,6 @@
 package com.rest.jhlabs.filter;
 
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 public class FilterForm {
@@ -30,6 +31,14 @@ public class FilterForm {
 
     public void setOutput(String output) {
         this.output = output;
+    }
+
+    public String getContentDisposition(){
+        return "inline; filename=image." + getOutput();
+    }
+
+    public MediaType getMediaType(){
+        return MediaType.parseMediaType("image/" + getOutput());
     }
 
 }
