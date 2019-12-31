@@ -25,7 +25,7 @@ public class FilterController {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<InputStreamResource> filter(@ModelAttribute FilterForm filterForm) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
+    public ResponseEntity<InputStreamResource> filter(@ModelAttribute FilterForm filterForm) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException, ClassNotFoundException, NoSuchMethodException {
         BufferedImage src = ImageIO.read(filterForm.getFile().getInputStream());
         byte[] bytes = filterService.apply(src, filterForm.getName(), filterForm.getOutput());
 
