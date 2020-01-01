@@ -9,6 +9,7 @@ public class FilterForm {
     private String name;
     private String output;
 
+
     public MultipartFile getFile() {
         return file;
     }

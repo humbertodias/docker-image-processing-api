@@ -34,16 +34,32 @@
 
                 <v-card-text>
 
-                    <v-select v-model="selectedFilter" :items="filters" name="name" label="Name" required>
-                    </v-select>
+                    <v-select v-model="selectedFilter" :items="filters" name="name" label="Name"  @input="changeFilter" required></v-select>
+
+                    {{parameters}}
+
+                    <v-tabs show-arrows>
+                        <v-tab v-for="(args, method, index) in filterMethods"
+                               :key="index"
+                        >
+                            <v-icon left>mdi-account</v-icon>
+                            {{ method }}
+                        </v-tab>
+
+                    <v-tab-item v-for="(args, method, index) in filterMethods" :key="index">
+                        <v-text-field v-model.sync="parameters[method][type]"  v-for="(type, arg, index) in args" :placeholder="type" v-on:keyup.enter="onEnter(method, type, arg, $event)"></v-text-field>
+                    </v-tab-item>
+
+                    </v-tabs>
+
 
                     <v-file-input v-model="selectedFile" label="Image" name="file" required
                                   accept="image/*"
                                   show-size
+
                     ></v-file-input>
 
-                    <v-select v-model="selectedFormat" name="output" :items="formats" label="Format" required>
-                    </v-select>
+                    <v-select v-model="selectedFormat" name="output" :items="formats" label="Format" required></v-select>
 
                 </v-card-text>
 
@@ -51,6 +67,7 @@
 
                     <v-spacer></v-spacer>
 
+                    <v-btn color="warning" @click="parameters=[]">Reset</v-btn>
                     <v-btn class="success" @click="submit">Apply</v-btn>
 
                 </v-card-actions>
@@ -77,20 +94,27 @@
             selectedFile: [],
             valid: false,
             image: false,
+            filterMethods: [],
+            parameters: [],
         },
         created() {
-            console.log("created")
             fetch('/filters')
                 .then(response => response.json())
                 .then((data) => this.filters = data);
         },
         methods: {
-            submit: function () {
+            submit() {
                 let self = this;
                 const data = new FormData();
                 data.append('name', this.selectedFilter);
                 data.append('file', this.selectedFile);
                 data.append('output', this.selectedFormat);
+                console.log('param', this.parameters)
+                for(let m of Object.keys(this.parameters)){
+                    for(let param of Object.keys(this.parameters)) {
+//                    data.append(param[0], param[1])
+                    }
+                }
                 let body = {
                     method: 'post',
                     body: data,
@@ -104,6 +128,36 @@
                         self.image = uri;
                     })
             },
+            changeFilter(filterName){
+                console.log('changeFilter', arguments)
+                fetch(`/filterParams?filterClass=${filterName}`)
+                    .then(response => response.json())
+                    .then((data) => {
+                        this.filterMethods = data;
+
+                        for(let m of Object.keys(this.filterMethods) ) {
+                            let args = this.filterMethods[m]
+                            for(let a of Object.keys(args) ){
+                                console.log(m, a, args[a])
+                                this.parameters[m] = {}
+                                this.parameters[m][args[a]]= ''
+                            }
+                        }
+                        console.log(this.parameters)
+
+                    });
+            },
+            onEnter(method, type, arg, evt){
+                let val = evt.target.value
+                console.log('onEnter1', method, type, arg, val)
+                console.log(this.parameters)
+                /*
+                let param = {}
+                param[method]=val
+                console.log('param', param)
+                this.parameters.push(param);
+                 */
+            }
         }
     })
 </script>
