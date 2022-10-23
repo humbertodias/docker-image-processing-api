@@ -11,9 +11,13 @@ Supported filters by [jhlabs](http://www.jhlabs.com/ip/filters/):
 
 # How to 
 
-## [Play](https://docker-image-api.herokuapp.com)
+```
+make run
+```
 
+# Browser
 
+http://localhost:8080
 
 ![](doc/form.png)
 
@@ -25,4 +29,18 @@ Output - Filter pointillize
 
 ![OutPut](doc/output.png)
 
+# Using terminal
 
+```
+curl "http://localhost:8080/filter" \
+-F file=@doc/input.png \
+-F name=pointillize \
+-F output=png > output.png
+```
+
+or with Docker
+
+```
+make docker-build
+make docker-run
+```
