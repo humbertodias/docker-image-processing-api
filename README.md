@@ -9,8 +9,11 @@ Supported filters by [jhlabs](http://www.jhlabs.com/ip/filters/):
 * RIPPLE
 * SHADOW
 
+# How to 
 
-# Run
+[Play](https://docker-image-api.herokuapp.com/)
+
+# Build
 
 ```
 make run
