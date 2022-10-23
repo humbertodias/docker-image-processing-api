@@ -1,6 +1,3 @@
-dep:
-	apk --update add fontconfig ttf-dejavu
-
 package:
 	mvn package
 
@@ -12,3 +9,9 @@ docker-build:
 
 docker-run:
 	docker run -p 8080:8080 image-processing-api
+
+update:
+	mvn versions:use-latest-releases
+
+clean:
+	mvn clean
