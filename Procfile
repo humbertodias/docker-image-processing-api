@@ -1,0 +1,1 @@
+web: java -jar target/jhlabs-0.0.1.jar --port $PORT --autoBindSsl --nocluster --nohostaware
